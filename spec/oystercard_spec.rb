@@ -21,8 +21,38 @@ describe '#deduct' do
     expect(card).to respond_to(:deduct).with(1).argument
   end
 
-  it 'reduces balance by a given amound' do
+  it 'reduces balance by a given amount' do
     expect{card.deduct(10)}.to change{card.balance}.by(-10)
   end
 end
+
+describe '#in_journey?' do
+  it 'checks whether the card is in use or not' do
+    expect(card.in_journey?).to be_falsey
+  end
+end
+
+  describe '#touch_in' do
+    it 'checks that the card responds to the touch_in method' do
+      expect(card).to respond_to(:touch_in)
+  end
+
+    it 'changes in_journey? to true' do
+      card.touch_in
+      expect(card.in_journey?).to be_truthy
+  end
+end
+
+  describe '#touch_out' do
+    it 'checks that the card responds to the touch_out method' do
+      expect(card).to respond_to(:touch_out)
+    end
+
+    it 'changes in_journey? to false' do
+      card.touch_in
+      card.touch_out
+      expect(card.in_journey?).to be_falsey
+  end
+end
+
 end
