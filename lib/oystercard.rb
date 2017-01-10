@@ -12,4 +12,8 @@ class Oystercard
     @balance += amt
   end
 
+  def deduct(amt)
+    @balance -= amt
+  end
+
 end
