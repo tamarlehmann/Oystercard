@@ -3,6 +3,7 @@ require 'oystercard'
 describe Oystercard do
   subject(:card) { described_class.new}
   let(:station) {double :station}
+  let(:station2) {double :station}
 
   it 'initialises with a balance of 0' do
     expect(card.balance).to eq 0
@@ -10,6 +11,10 @@ describe Oystercard do
 
   it 'initialises with an entry station of nil' do
     expect(card.entry_station).to be_falsey
+  end
+
+  it 'initialises with an empty journey history' do
+    expect(card.journey_history).to eq []
   end
 
 describe '#top_up' do
@@ -59,22 +64,30 @@ end
     it 'changes in_journey? to false' do
       card.top_up(Oystercard::MIN_FARE)
       card.touch_in(station)
-      card.touch_out
+      card.touch_out(station2)
       expect(card.in_journey?).to be_falsey
   end
 
     it 'deducts the MIN_FARE when we touch out' do
       card.top_up(Oystercard::MIN_FARE)
       card.touch_in(station)
-      expect{card.touch_out}.to change{card.balance}.by(-Oystercard::MIN_FARE)
+      expect{card.touch_out(station2)}.to change{card.balance}.by(-Oystercard::MIN_FARE)
     end
 
     it 'forgets the entry station when touching out' do
       card.top_up(Oystercard::MIN_FARE)
       card.touch_in(station)
-      card.touch_out
+      card.touch_out(station2)
       expect(card.entry_station).to eq nil
     end
 end
 
+  describe '#journey_history' do
+    it 'stores a journey history' do
+    card.top_up(Oystercard::MIN_FARE)
+    card.touch_in(station)
+    card.touch_out(station2)
+    expect((card.journey_history).length).to eq(1)
+  end
+end
 end
