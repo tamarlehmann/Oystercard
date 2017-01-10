@@ -38,9 +38,15 @@ end
   end
 
     it 'changes in_journey? to true' do
+      card.top_up(Oystercard::MIN_FARE)
       card.touch_in
       expect(card.in_journey?).to be_truthy
   end
+
+  it 'raises an error if insufficient balance on card' do
+    expect{card.touch_in}.to raise_error("Insufficient funds on card. Top up!")
+  end
+
 end
 
   describe '#touch_out' do
@@ -49,6 +55,7 @@ end
     end
 
     it 'changes in_journey? to false' do
+      card.top_up(Oystercard::MIN_FARE)
       card.touch_in
       card.touch_out
       expect(card.in_journey?).to be_falsey
