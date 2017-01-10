@@ -16,16 +16,6 @@ describe '#top_up' do
   end
 end
 
-describe '#deduct' do
-  it 'checks that card responds to the deduct method' do
-    expect(card).to respond_to(:deduct).with(1).argument
-  end
-
-  it 'reduces balance by a given amount' do
-    expect{card.deduct(10)}.to change{card.balance}.by(-10)
-  end
-end
-
 describe '#in_journey?' do
   it 'checks whether the card is in use or not' do
     expect(card.in_journey?).to be_falsey
@@ -60,6 +50,12 @@ end
       card.touch_out
       expect(card.in_journey?).to be_falsey
   end
+
+    it 'deducts the MIN_FARE when we touch out' do
+      card.top_up(Oystercard::MIN_FARE)
+      card.touch_in
+      expect{card.touch_out}.to change{card.balance}.by(-Oystercard::MIN_FARE)
+    end
 end
 
 end
