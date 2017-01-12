@@ -4,6 +4,7 @@ describe Oystercard do
   subject(:card) { described_class.new}
   let(:station) {double :station}
   let(:station2) {double :station}
+  let(:journey) {double :journey}
 
   it 'initialises with a balance of 0' do
     expect(card.balance).to eq 0

@@ -16,8 +16,8 @@ class Journey
   end
 
   def start_journey
+    @entry_station = entry_station
     @full_journey = { entry: @entry_station, exit: @exit_station }
-
   end
 
   def complete_journey(exit_station)
@@ -26,11 +26,6 @@ class Journey
   end
 
   def fare
-    if @exit_station == nil
-      PENALTY_CHARGE
-    else
-      MIN_FARE
-    end
-
+     (@exit_station != nil && @entry_station != nil) ? MIN_FARE : PENALTY_CHARGE
   end
 end

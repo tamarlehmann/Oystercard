@@ -1,4 +1,5 @@
 require "./lib/oystercard.rb"
 require "./lib/journey.rb"
 
-oystercard = Oystercard.new
+card = Oystercard.new
+card.top_up(20)

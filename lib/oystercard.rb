@@ -19,18 +19,13 @@ class Oystercard
 
   def touch_in(entry_station)
     raise "Insufficient funds on card. Top up!" if balance < Journey::MIN_FARE
-    if !@journey.nil?
-      @journey_history << @journey.start_journey
-      deduct(@journey.fare)
-    else
-      @journey = Journey.new(entry_station)
-    end
+    touch_in_edge_case if !@journey.nil?
+    @journey = Journey.new(entry_station)
   end
 
   def touch_out(exit_station)
     if @journey == nil
-      @journey_history << { entry: nil, exit: exit_station }
-      deduct(Journey::PENALTY_CHARGE)
+      touch_out_edge_case(exit_station)
     else
       @journey_history << @journey.complete_journey(exit_station)
       deduct(@journey.fare)
@@ -44,5 +39,14 @@ class Oystercard
     @balance -= amt
   end
 
+  def touch_in_edge_case
+    @journey_history << @journey.start_journey
+    deduct(@journey.fare)
+  end
+
+  def touch_out_edge_case(exit_station)
+    deduct(Journey::PENALTY_CHARGE)
+    @journey_history << { entry: nil, exit: exit_station }
+  end
 
 end
