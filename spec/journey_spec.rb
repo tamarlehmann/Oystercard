@@ -20,9 +20,8 @@ describe Journey do
     end
 
     it 'full journey is stred with a nil exit station' do
-      expect(journey.full_journey[exit]).to eq nil
+      expect(journey.full_journey[:exit]).to eq nil
     end
-
   end
 
     describe '#complete_journey' do
@@ -30,7 +29,6 @@ describe Journey do
         journey.complete_journey("aldgate")
         expect(journey.exit_station).to eq "aldgate"
       end
-
     end
 
 end
