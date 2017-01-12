@@ -9,10 +9,6 @@ describe Oystercard do
     expect(card.balance).to eq 0
   end
 
-  it 'initialises with an entry station of nil' do
-    expect(card.entry_station).to be_falsey
-  end
-
   it 'initialises with an empty journey history' do
     expect(card.journey_history).to eq []
   end
@@ -28,9 +24,11 @@ describe '#top_up' do
 end
 
 describe '#in_journey?' do
-  it 'checks whether the card is in use or not' do
-    expect(card.in_journey?).to be_falsey
-  end
+  # expect(card.current_journey).to eq nil
+
+  # it 'checks whether the card is in use or not' do
+  #   expect(card.in_journey?).to be_falsey
+  # end
 end
 
   describe '#touch_in' do
@@ -39,19 +37,33 @@ end
   end
 
     it 'changes in_journey? to true' do
-      card.top_up(Oystercard::MIN_FARE)
-      card.touch_in(station)
-      expect(card.in_journey?).to be_truthy
+      # expect(card.current_journey).not_to eq nil
+
+      # card.top_up(Oystercard::MIN_FARE)
+      # card.touch_in(station)
+      # expect(card.in_journey?).to be_truthy
   end
 
   it 'raises an error if insufficient balance on card' do
     expect{card.touch_in(station)}.to raise_error("Insufficient funds on card. Top up!")
   end
 
-  it 'remembers entry station after touch_in' do
-    card.top_up(Oystercard::MIN_FARE)
+  it 'deducts the penalty fare when touching in without touching out' do
+    card.top_up(Journey::PENALTY_CHARGE)
     card.touch_in(station)
-    expect(card.entry_station).to eq(station)
+    expect{ card.touch_in(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
+  end
+
+  # it 'remembers entry station after touch_in' do
+  #   card.top_up(Journey::MIN_FARE)
+  #   card.touch_in(station)
+  #   expect(card.entry_station).to eq(station)
+  # end
+
+  it 'after touch in you have a new journey instance' do
+    card.top_up(Journey::MIN_FARE)
+    card.touch_in(station)
+    expect(card.journey).to be_an_instance_of(Journey)
   end
 
 end
@@ -61,30 +73,32 @@ end
       expect(card).to respond_to(:touch_out)
     end
 
-    it 'changes in_journey? to false' do
-      card.top_up(Oystercard::MIN_FARE)
-      card.touch_in(station)
-      card.touch_out(station2)
-      expect(card.in_journey?).to be_falsey
-  end
+
 
     it 'deducts the MIN_FARE when we touch out' do
-      card.top_up(Oystercard::MIN_FARE)
+      card.top_up(Journey::MIN_FARE)
       card.touch_in(station)
-      expect{card.touch_out(station2)}.to change{card.balance}.by(-Oystercard::MIN_FARE)
+      expect{card.touch_out(station2)}.to change{card.balance}.by(-Journey::MIN_FARE)
     end
 
+    it 'deducts the penalty fare when touching out without touching in' do
+      card.top_up(Journey::PENALTY_CHARGE)
+      expect{ card.touch_out(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
+    end
+
+
+
     it 'forgets the entry station when touching out' do
-      card.top_up(Oystercard::MIN_FARE)
+      card.top_up(Journey::MIN_FARE)
       card.touch_in(station)
       card.touch_out(station2)
-      expect(card.entry_station).to eq nil
+      expect(card.journey).to eq nil
     end
 end
 
   describe '#journey_history' do
     it 'stores a journey history' do
-    card.top_up(Oystercard::MIN_FARE)
+    card.top_up(Journey::MIN_FARE)
     card.touch_in(station)
     card.touch_out(station2)
     expect((card.journey_history).length).to eq(1)
