@@ -15,13 +15,16 @@ class JourneyLog
   end
 
   def finish(exit_station)
-    
+    @journey_class.complete_journey(exit_station)
+    @journeys.push(@journey_class.full_journey)
+    @journey_class = nil
   end
 
 private
 
   def current_journey(entry_station)
     @journeys.push(@journey_class.full_journey)
+    @journey_class = nil
     @journey_class = Journey.new(entry_station)
   end
 
