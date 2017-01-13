@@ -24,13 +24,10 @@ class Oystercard
   end
 
   def touch_out(exit_station)
-    if @journey == nil
-      touch_out_edge_case(exit_station)
-    else
-      @journey_history << @journey.complete_journey(exit_station)
-      deduct(@journey.fare)
-      @journey = nil
-    end
+    touch_out_edge_case(exit_station) if @journey == nil
+    @journey_history << @journey.complete_journey(exit_station) if @journey != nil
+    deduct(@journey.fare) if @journey != nil
+    @journey = nil
   end
 
   private
