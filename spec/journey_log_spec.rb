@@ -31,6 +31,16 @@ describe JourneyLog do
     end
 
     it "pushes the journey to @journeys when user has failed to touch in" do
+      journey_log.finish("Bank")
+      expect(journey_log.journeys).to include({:entry =>nil, :exit=>"Bank"})
     end
+  end
+
+  describe "Saves journey log to @journeys" do
+      it 'stores a journey history' do
+        journey_log.start("Bank")
+        journey_log.finish("Waterloo")
+        expect(journey_log.journeys).to include({:entry =>"Bank", :exit=>"Waterloo"})
+      end
   end
 end

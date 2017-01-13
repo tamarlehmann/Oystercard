@@ -10,10 +10,6 @@ describe Oystercard do
     expect(card.balance).to eq 0
   end
 
-  it 'initialises with an empty journey history' do
-    expect(card.journey_history).to eq []
-  end
-
 describe '#top_up' do
   it 'tops up by a given amount' do
     expect(card.top_up(10)).to eq card.balance
@@ -39,11 +35,6 @@ end
     expect{ card.touch_in(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
   end
 
-  it 'after touch in you have a new journey instance' do
-    card.top_up(Journey::MIN_FARE)
-    card.touch_in(station)
-    expect(card.journey).to be_an_instance_of(Journey)
-  end
 end
 
   describe '#touch_out' do
@@ -60,22 +51,6 @@ end
     it 'deducts the penalty fare when touching out without touching in' do
       card.top_up(Journey::PENALTY_CHARGE)
       expect{ card.touch_out(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
-    end
-
-    it 'forgets the entry station when touching out' do
-      card.top_up(Journey::MIN_FARE)
-      card.touch_in(station)
-      card.touch_out(station2)
-      expect(card.journey).to eq nil
-    end
-end
-
-  describe '#journey_history' do
-    it 'stores a journey history' do
-      card.top_up(Journey::MIN_FARE)
-      card.touch_in(station)
-      card.touch_out(station2)
-      expect((card.journey_history).length).to eq(1)
     end
   end
 end
