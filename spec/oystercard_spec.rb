@@ -24,25 +24,9 @@ describe '#top_up' do
   end
 end
 
-describe '#in_journey?' do
-  # expect(card.current_journey).to eq nil
-
-  # it 'checks whether the card is in use or not' do
-  #   expect(card.in_journey?).to be_falsey
-  # end
-end
-
   describe '#touch_in' do
     it 'checks that the card responds to the touch_in method' do
       expect(card).to respond_to(:touch_in)
-  end
-
-    it 'changes in_journey? to true' do
-      # expect(card.current_journey).not_to eq nil
-
-      # card.top_up(Oystercard::MIN_FARE)
-      # card.touch_in(station)
-      # expect(card.in_journey?).to be_truthy
   end
 
   it 'raises an error if insufficient balance on card' do
@@ -55,26 +39,17 @@ end
     expect{ card.touch_in(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
   end
 
-  # it 'remembers entry station after touch_in' do
-  #   card.top_up(Journey::MIN_FARE)
-  #   card.touch_in(station)
-  #   expect(card.entry_station).to eq(station)
-  # end
-
   it 'after touch in you have a new journey instance' do
     card.top_up(Journey::MIN_FARE)
     card.touch_in(station)
     expect(card.journey).to be_an_instance_of(Journey)
   end
-
 end
 
   describe '#touch_out' do
     it 'checks that the card responds to the touch_out method' do
       expect(card).to respond_to(:touch_out)
     end
-
-
 
     it 'deducts the MIN_FARE when we touch out' do
       card.top_up(Journey::MIN_FARE)
@@ -87,8 +62,6 @@ end
       expect{ card.touch_out(station) }.to change{card.balance}.by(-Journey::PENALTY_CHARGE)
     end
 
-
-
     it 'forgets the entry station when touching out' do
       card.top_up(Journey::MIN_FARE)
       card.touch_in(station)
@@ -99,10 +72,10 @@ end
 
   describe '#journey_history' do
     it 'stores a journey history' do
-    card.top_up(Journey::MIN_FARE)
-    card.touch_in(station)
-    card.touch_out(station2)
-    expect((card.journey_history).length).to eq(1)
+      card.top_up(Journey::MIN_FARE)
+      card.touch_in(station)
+      card.touch_out(station2)
+      expect((card.journey_history).length).to eq(1)
+    end
   end
-end
 end

@@ -2,8 +2,6 @@ require 'journey'
 
 describe Journey do
   let (:journey) { described_class.new ("bank")}
-  # let(:station) {double :station}
-  # let(:station2) {double :station}
 
   describe '#in_journey?' do
 
